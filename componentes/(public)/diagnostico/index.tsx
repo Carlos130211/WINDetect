@@ -20,6 +20,9 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { PublicShell } from "../public-shell";
+import { useRouter } from "next/navigation";
+import { saveSession } from "@/lib/session";
+import type { Session } from "@/lib/types";
 
 type SpaceType = "Casa" | "Departamento" | "Oficina";
 type Phase = "setup" | "router" | "journey";
@@ -134,6 +137,7 @@ function qualityStyles(quality: number) {
 }
 
 export default function DiagnosticoPage() {
+  const router = useRouter();
   const [spaceType, setSpaceType] = useState<SpaceType>("Casa");
   const [rooms, setRooms] = useState<string[]>(spacePresets.Casa);
   const [customRoom, setCustomRoom] = useState("");
@@ -236,20 +240,35 @@ export default function DiagnosticoPage() {
   const done = phase === "journey" && currentPoint === ROUTER && legs.length > 0;
   const worstLeg = legs.length ? legs.reduce((worst, leg) => (leg.quality < worst.quality ? leg : worst)) : null;
 
+  const finishDiagnostic = () => {
+    if (!baseline || !done) return;
+
+    const session: Session = {
+      id: `session-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      spaceType,
+      rooms,
+      baseline,
+      legs,
+    };
+    saveSession(session);
+    router.push("/reporte");
+  };
+
   const SpaceIcon = spaceIcon[spaceType];
 
   return (
     <PublicShell>
-      <section className="mx-auto max-w-6xl px-5 py-16 sm:px-8 lg:py-24">
+      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-8 sm:py-16 lg:py-24">
         <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-win-blue hover:text-win-orange">
           <ArrowLeft className="h-4 w-4" /> Volver al inicio
         </Link>
 
-        <div className="mt-10 rounded-3xl border border-slate-200 bg-win-white p-7 sm:p-10">
+        <div className="mt-8 rounded-3xl border border-slate-200 bg-win-white p-5 sm:mt-10 sm:p-10">
           <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-300/10">
             <Wifi className="h-7 w-7 text-cyan-300" />
           </span>
-          <h1 className="mt-7 text-3xl font-extrabold text-win-blue sm:text-4xl">Diagnostico de tu conexion</h1>
+          <h1 className="mt-6 text-2xl font-extrabold text-win-blue sm:mt-7 sm:text-4xl">Diagnostico de tu conexion</h1>
           <p className="mt-4 leading-7 text-slate-400">
             Sales del router, caminas hacia cada ambiente midiendo los picos del trayecto y vuelves al router para cerrar el recorrido. Con eso armamos el mapa de calor de la ruta.
           </p>
@@ -285,9 +304,9 @@ export default function DiagnosticoPage() {
               })}
             </div>
 
-            <div className="mt-5 flex gap-2">
-              <input value={customRoom} onChange={(event) => setCustomRoom(event.target.value)} onKeyDown={(event) => event.key === "Enter" && addCustomRoom()} placeholder="Agregar otro ambiente" className="flex-1 rounded-xl border border-slate-200 bg-win-surface px-4 py-2.5 text-sm outline-none focus:border-win-blue" />
-              <button type="button" onClick={addCustomRoom} className="inline-flex items-center gap-1.5 rounded-xl bg-win-surface px-4 py-2.5 text-sm font-semibold text-win-blue hover:bg-cyan-50"><Plus className="h-4 w-4" /> Agregar</button>
+              <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+                <input value={customRoom} onChange={(event) => setCustomRoom(event.target.value)} onKeyDown={(event) => event.key === "Enter" && addCustomRoom()} placeholder="Agregar otro ambiente" className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-win-surface px-4 py-2.5 text-sm outline-none focus:border-win-blue" />
+                <button type="button" onClick={addCustomRoom} className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-win-surface px-4 py-2.5 text-sm font-semibold text-win-blue hover:bg-cyan-50"><Plus className="h-4 w-4" /> Agregar</button>
             </div>
 
             <div className="mt-8 flex items-start gap-3 rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.05] p-4 text-sm text-slate-400">
@@ -329,7 +348,7 @@ export default function DiagnosticoPage() {
           <>
             {/* Controles del recorrido */}
             {!done ? (
-              <div className="mt-6 rounded-3xl border border-slate-200 bg-win-white p-6 sm:p-8">
+              <div className="mt-6 rounded-3xl border border-slate-200 bg-win-white p-5 sm:p-8">
                 <div className="flex items-center gap-2 text-sm font-semibold text-win-blue">
                   <MapPin className="h-4 w-4 text-cyan-300" /> Estas en: <span>{currentPoint}</span>
                 </div>
@@ -338,7 +357,7 @@ export default function DiagnosticoPage() {
                   <div className="mt-5 rounded-2xl border border-win-blue bg-cyan-50/40 p-5">
                     <p className="text-sm font-semibold text-win-blue">Caminando hacia {destination}...</p>
                     <p className="mt-1 text-xs text-slate-500">Midiendo los picos del trayecto. Camina sin apurarte.</p>
-                    <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    <div className="mt-4 grid grid-cols-1 min-[400px]:grid-cols-2 gap-3 sm:grid-cols-4">
                       <div className="rounded-xl bg-win-white p-3"><p className="text-xs text-slate-500">Ahora</p><p className="mt-1 text-lg font-bold text-win-blue">{live.last ? live.last.speed.toFixed(0) : "--"} <span className="text-xs">Mbps</span></p></div>
                       <div className="rounded-xl bg-win-white p-3"><p className="text-xs text-slate-500">Pico max</p><p className="mt-1 text-lg font-bold text-emerald-600">{live.maxSpeed.toFixed(0)} <span className="text-xs">Mbps</span></p></div>
                       <div className="rounded-xl bg-win-white p-3"><p className="text-xs text-slate-500">Caida min</p><p className="mt-1 text-lg font-bold text-rose-600">{live.minSpeed.toFixed(0)} <span className="text-xs">Mbps</span></p></div>
@@ -375,9 +394,9 @@ export default function DiagnosticoPage() {
 
             {/* Mapa de calor del recorrido */}
             {legs.length > 0 ? (
-              <div className="mt-6 rounded-3xl border border-slate-200 bg-win-white p-6 sm:p-8">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2"><SpaceIcon className="h-5 w-5 text-cyan-300" /><h2 className="text-xl font-bold text-win-blue">Mapa de calor del recorrido</h2></div>
+              <div className="mt-6 rounded-3xl border border-slate-200 bg-win-white p-5 sm:p-8">
+                <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex items-center gap-2"><SpaceIcon className="h-5 w-5 shrink-0 text-cyan-300" /><h2 className="text-lg font-bold text-win-blue sm:text-xl">Mapa de calor del recorrido</h2></div>
                   <span className="rounded-full bg-cyan-300/10 px-3 py-1 text-xs font-bold text-cyan-200">{done ? "Completo" : "En curso"}</span>
                 </div>
 
@@ -395,11 +414,11 @@ export default function DiagnosticoPage() {
                         {/* Tramo */}
                         <div className="ml-4 flex gap-4 border-l-2 border-dashed border-slate-200 py-4 pl-6">
                           <div className={`w-full rounded-2xl border bg-win-white p-4 ${styles.ring}`}>
-                            <div className="flex items-center justify-between">
+                            <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
                               <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">{leg.from} → {leg.to}</span>
                               <span className={`flex items-center gap-1.5 text-xs font-bold ${styles.text}`}><span className={`h-2.5 w-2.5 rounded-full ${styles.dot}`} /> {leg.quality}% · {styles.label}</span>
                             </div>
-                            <div className="mt-3 grid grid-cols-3 gap-3 text-xs text-slate-500">
+                            <div className="mt-3 grid grid-cols-1 gap-2 text-xs text-slate-500 sm:grid-cols-3 sm:gap-3">
                               <span>Pico: <strong className="text-emerald-600">{leg.maxSpeed.toFixed(0)} Mbps</strong></span>
                               <span>Caida: <strong className="text-rose-600">{leg.minSpeed.toFixed(0)} Mbps</strong></span>
                               <span>Lat. pico: <strong className="text-amber-600">{leg.peakLatency.toFixed(0)} ms</strong></span>
@@ -429,9 +448,14 @@ export default function DiagnosticoPage() {
                       <CheckCircle2 className="h-5 w-5 shrink-0" />
                       <p>Recorrido cerrado. {worstLeg ? `El tramo mas critico fue ${worstLeg.from} → ${worstLeg.to} (${worstLeg.quality}%).` : ""} Ya puedes generar el reporte para WIN.</p>
                     </div>
-                    <button type="button" onClick={reset} className="inline-flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-win-blue">
-                      <RotateCcw className="h-4 w-4" /> Reiniciar diagnostico
-                    </button>
+                    <div className="flex flex-wrap items-center gap-4">
+                      <button type="button" onClick={finishDiagnostic} className="inline-flex items-center gap-2 rounded-xl bg-win-orange px-5 py-3 text-sm font-bold text-white shadow-lg shadow-cyan-500/15">
+                        Ver mi reporte <Flag className="h-4 w-4" />
+                      </button>
+                      <button type="button" onClick={reset} className="inline-flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-win-blue">
+                        <RotateCcw className="h-4 w-4" /> Reiniciar diagnostico
+                      </button>
+                    </div>
                   </div>
                 ) : null}
               </div>

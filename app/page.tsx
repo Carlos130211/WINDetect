@@ -138,7 +138,7 @@ export default function HomePage() {
           <nav className="hidden items-center gap-8 lg:flex">
             <a
               href="/como-funciona"
-              className={`text-sm font-medium transition-colors ${
+              className={`text-sm font-bold transition-colors ${
                 isDark
                   ? "text-slate-400 hover:text-white"
                   : "text-slate-600 hover:text-slate-950"
@@ -149,7 +149,7 @@ export default function HomePage() {
 
             <a
               href="/beneficios"
-              className={`text-sm font-medium transition-colors ${
+              className={`text-sm font-bold transition-colors ${
                 isDark
                   ? "text-slate-400 hover:text-white"
                   : "text-slate-600 hover:text-slate-950"
@@ -160,7 +160,7 @@ export default function HomePage() {
 
             <button
               onClick={() => setShowHelp(true)}
-              className={`flex items-center gap-2 text-sm font-medium transition-colors ${
+              className={`flex items-center gap-2 text-sm font-bold transition-colors ${
                 isDark
                   ? "text-slate-400 hover:text-white"
                   : "text-slate-600 hover:text-slate-950"
@@ -209,7 +209,7 @@ export default function HomePage() {
               <a
                 href="/como-funciona"
                 onClick={() => setMenuOpen(false)}
-                className={`rounded-xl px-4 py-3.5 text-base font-medium ${
+                className={`rounded-xl px-4 py-3.5 text-base font-bold ${
                   isDark
                     ? "text-slate-300 hover:bg-white/[0.05]"
                     : "text-slate-700 hover:bg-slate-50"
@@ -221,7 +221,7 @@ export default function HomePage() {
               <a
                 href="/beneficios"
                 onClick={() => setMenuOpen(false)}
-                className={`rounded-xl px-4 py-3.5 text-base font-medium ${
+                className={`rounded-xl px-4 py-3.5 text-base font-bold ${
                   isDark
                     ? "text-slate-300 hover:bg-white/[0.05]"
                     : "text-slate-700 hover:bg-slate-50"
@@ -235,7 +235,7 @@ export default function HomePage() {
                   setMenuOpen(false);
                   setShowHelp(true);
                 }}
-                className={`flex items-center gap-3 rounded-xl px-4 py-3.5 text-left text-base font-medium ${
+                className={`flex items-center gap-3 rounded-xl px-4 py-3.5 text-left text-base font-bold ${
                   isDark
                     ? "text-slate-300 hover:bg-white/[0.05]"
                     : "text-slate-700 hover:bg-slate-50"
@@ -254,7 +254,7 @@ export default function HomePage() {
           HERO PRINCIPAL
       ====================================================== */}
       <section className="relative z-10">
-        <div className="mx-auto grid min-h-[calc(100vh-76px)] max-w-7xl items-center gap-12 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[1fr_0.9fr] lg:gap-16 lg:px-10 lg:py-16">
+        <div className="mx-auto grid min-h-0 max-w-7xl items-center gap-10 px-4 py-10 sm:px-8 sm:py-16 lg:min-h-[calc(100vh-76px)] lg:grid-cols-[1fr_0.9fr] lg:gap-16 lg:px-10 lg:py-16">
           {/* Columna izquierda */}
           <div className="max-w-2xl">
             {/* Badge */}
@@ -282,7 +282,7 @@ export default function HomePage() {
 
             {/* Título */}
             <h1
-              className={`text-[2.65rem] font-extrabold leading-[1.08] tracking-[-0.045em] sm:text-5xl lg:text-[4.25rem] ${
+              className={`text-[2.35rem] font-extrabold leading-[1.08] tracking-[-0.045em] sm:text-5xl lg:text-[4.25rem] ${
                 isDark ? "text-white" : "text-win-text"
               }`}
             >
@@ -453,7 +453,7 @@ export default function HomePage() {
           {/* =================================================
               VISUAL INTERACTIVO
           ================================================== */}
-          <div className="relative flex min-h-[420px] items-center justify-center lg:min-h-[570px]">
+          <div className="relative flex min-h-[320px] items-center justify-center sm:min-h-[420px] lg:min-h-[570px]">
             {/* Glow */}
             <div
               className={`absolute h-72 w-72 rounded-full blur-[100px] ${
@@ -463,32 +463,32 @@ export default function HomePage() {
 
             {/* Anillos de conectividad */}
             <div
-              className={`absolute h-[340px] w-[340px] animate-[spin_30s_linear_infinite] rounded-full border border-dashed ${
+              className={`absolute h-[270px] w-[270px] animate-[spin_30s_linear_infinite] rounded-full border border-dashed sm:h-[340px] sm:w-[340px] ${
                 isDark ? "border-cyan-300/[0.10]" : "border-cyan-700/[0.12]"
               }`}
             />
 
             <div
-              className={`absolute h-[270px] w-[270px] rounded-full border ${
+              className={`absolute h-[220px] w-[220px] rounded-full border sm:h-[270px] sm:w-[270px] ${
                 isDark ? "border-cyan-300/[0.12]" : "border-cyan-700/[0.14]"
               }`}
             />
 
             <div
-              className={`absolute h-[200px] w-[200px] rounded-full border ${
+              className={`absolute h-[165px] w-[165px] rounded-full border sm:h-[200px] sm:w-[200px] ${
                 isDark ? "border-cyan-300/[0.16]" : "border-cyan-700/[0.16]"
               }`}
             />
 
             {/* Líneas */}
             <div
-              className={`absolute h-px w-[340px] rotate-45 ${
+              className={`absolute h-px w-[260px] rotate-45 sm:w-[340px] ${
                 "bg-win-orange"
               }`}
             />
 
             <div
-              className={`absolute h-px w-[340px] -rotate-45 ${
+              className={`absolute h-px w-[260px] -rotate-45 sm:w-[340px] ${
                 "bg-win-orange"
               }`}
             />
@@ -545,7 +545,7 @@ export default function HomePage() {
 
             {/* Tarjeta: buena experiencia */}
             <div
-              className={`absolute left-0 top-[14%] z-20 flex items-center gap-3 rounded-2xl border px-4 py-3 shadow-xl backdrop-blur-md transition-all duration-500 hover:-translate-y-1 ${
+              className={`absolute left-0 top-[14%] z-20 hidden items-center gap-3 rounded-2xl border px-4 py-3 shadow-xl backdrop-blur-md transition-all duration-500 hover:-translate-y-1 sm:flex ${
                 isDark
                   ? "border-emerald-400/20 bg-win-blue shadow-emerald-950/20"
                   : "border-emerald-200 bg-white/95 shadow-emerald-100"
@@ -575,7 +575,7 @@ export default function HomePage() {
 
             {/* Tarjeta: medición */}
             <div
-              className={`absolute right-0 top-[8%] z-20 flex items-center gap-3 rounded-2xl border px-4 py-3 shadow-xl backdrop-blur-md transition-all duration-500 hover:-translate-y-1 ${
+              className={`absolute right-0 top-[8%] z-20 hidden items-center gap-3 rounded-2xl border px-4 py-3 shadow-xl backdrop-blur-md transition-all duration-500 hover:-translate-y-1 sm:flex ${
                 isDark
                   ? "border-blue-400/20 bg-win-blue shadow-blue-950/20"
                   : "border-blue-200 bg-white/95 shadow-blue-100"
@@ -605,7 +605,7 @@ export default function HomePage() {
 
             {/* Tarjeta: zona por revisar */}
             <div
-              className={`absolute bottom-[14%] left-[2%] z-20 flex items-center gap-3 rounded-2xl border px-4 py-3 shadow-xl backdrop-blur-md transition-all duration-500 hover:-translate-y-1 ${
+              className={`absolute bottom-[14%] left-[2%] z-20 hidden items-center gap-3 rounded-2xl border px-4 py-3 shadow-xl backdrop-blur-md transition-all duration-500 hover:-translate-y-1 sm:flex ${
                 isDark
                   ? "border-amber-400/20 bg-win-blue shadow-amber-950/20"
                   : "border-amber-200 bg-white/95 shadow-amber-100"

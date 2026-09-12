@@ -1,7 +1,12 @@
+"use client";
+
 import Link from "next/link";
-import { ArrowRight, CircleHelp, Home, Wifi } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, CircleHelp, Home, Menu, Wifi, X } from "lucide-react";
 
 export function PublicShell({ children }: { children: React.ReactNode }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <main className="min-h-screen overflow-x-hidden bg-win-white text-win-text">
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
@@ -10,7 +15,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
       </div>
 
       <header className="relative z-10 border-b border-slate-200 bg-win-white backdrop-blur-xl">
-        <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-10">
+        <div className="mx-auto flex min-h-[76px] max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-8 lg:px-10">
           <Link href="/" className="group flex items-center gap-3" aria-label="Ir al inicio">
             <span className="flex h-11 w-11 items-center justify-center rounded-[14px] border border-cyan-300/20 bg-cyan-300/[0.10] transition-transform group-hover:scale-105">
               <Wifi className="h-5 w-5 text-cyan-300" />
@@ -30,22 +35,43 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
             </Link>
           </nav>
 
-          <Link href="/diagnostico" className="group flex items-center gap-2 rounded-xl bg-win-orange px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-cyan-500/15 transition-transform hover:-translate-y-0.5">
+          <div className="flex items-center gap-2">
+            <Link href="/diagnostico" className="group flex items-center gap-2 rounded-xl bg-win-orange px-3 py-2.5 text-center text-xs font-bold text-white shadow-lg shadow-cyan-500/15 transition-transform hover:-translate-y-0.5 sm:px-4 sm:text-sm">
             <span className="hidden sm:inline">Iniciar diagnostico</span>
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Link>
+            </Link>
+            <button
+              type="button"
+              onClick={() => setMenuOpen((open) => !open)}
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-win-blue md:hidden"
+              aria-label={menuOpen ? "Cerrar menu" : "Abrir menu"}
+              aria-expanded={menuOpen}
+            >
+              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
         </div>
+
+        {menuOpen ? (
+          <nav className="border-t border-slate-200 bg-win-white px-4 py-3 md:hidden sm:px-8">
+            <div className="mx-auto flex max-w-7xl flex-col gap-1">
+              <Link href="/como-funciona" onClick={() => setMenuOpen(false)} className="rounded-xl px-3 py-3 text-sm font-semibold text-win-blue hover:bg-win-surface">Como funciona</Link>
+              <Link href="/beneficios" onClick={() => setMenuOpen(false)} className="rounded-xl px-3 py-3 text-sm font-semibold text-win-blue hover:bg-win-surface">Beneficios</Link>
+              <Link href="/ayuda" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 rounded-xl px-3 py-3 text-sm font-semibold text-win-blue hover:bg-win-surface"><CircleHelp className="h-4 w-4" /> Ayuda</Link>
+            </div>
+          </nav>
+        ) : null}
       </header>
 
       <div className="relative z-10">{children}</div>
 
       <footer className="relative z-10 border-t border-slate-200 bg-win-surface">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-8 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-10">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-8 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-10">
           <Link href="/" className="flex items-center gap-3">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-cyan-300/10"><Home className="h-4 w-4 text-cyan-300" /></span>
             <span className="text-xs font-bold tracking-[0.18em]">WINDetect</span>
           </Link>
-          <p className="text-xs text-slate-600">Conectividad mas facil de entender.</p>
+          <p className="text-xs text-slate-600 md:text-right">Conectividad mas facil de entender.</p>
         </div>
       </footer>
     </main>
