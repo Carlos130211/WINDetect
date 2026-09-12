@@ -1,19 +1,129 @@
 "use client";
 
-import { useState } from "react";
-import { Activity, ArrowRight, Menu, Wifi, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  Activity,
+  ArrowRight,
+  Check,
+  ChevronDown,
+  CircleHelp,
+  Eye,
+  Home,
+  Menu,
+  Moon,
+  MoveRight,
+  Network,
+  ShieldCheck,
+  Sparkles,
+  Sun,
+  Wifi,
+  X,
+  Zap,
+} from "lucide-react";
 
-export default function Home() {
+type Theme = "light" | "dark";
+
+const homeTypes = [
+  {
+    id: "casa",
+    label: "Casa",
+    icon: Home,
+    description: "Para evaluar la conexión en tu hogar.",
+  },
+  {
+    id: "departamento",
+    label: "Departamento",
+    icon: Network,
+    description: "Ideal para espacios con varias habitaciones.",
+  },
+  {
+    id: "oficina",
+    label: "Oficina",
+    icon: Activity,
+    description: "Para revisar tu conectividad de trabajo.",
+  },
+];
+
+export default function HomePage() {
+  const [theme, setTheme] = useState<Theme>("dark");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [selectedHome, setSelectedHome] = useState("casa");
+  const [largeText, setLargeText] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
+  const [isStarting, setIsStarting] = useState(false);
+
+  // Detectar tema del sistema al cargar
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("win-home-theme") as Theme | null;
+
+    if (savedTheme === "light" || savedTheme === "dark") {
+      setTheme(savedTheme);
+      return;
+    }
+
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+
+    setTheme(prefersDark ? "dark" : "light");
+  }, []);
+
+  // Aplicar tema al documento
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+    localStorage.setItem("win-home-theme", theme);
+  }, [theme]);
+
+  const isDark = theme === "dark";
+
+  const toggleTheme = () => {
+    setTheme((current) => (current === "dark" ? "light" : "dark"));
+  };
+
+  const handleStart = () => {
+    setIsStarting(true);
+
+    // Preparado para conectar con el flujo real de diagnóstico.
+    // Ejemplo futuro:
+    // router.push("/diagnostico");
+
+    setTimeout(() => {
+      setIsStarting(false);
+      alert("Aquí comenzará el diagnóstico de tu conexión.");
+    }, 700);
+  };
+
+  const selectedHomeData =
+    homeTypes.find((item) => item.id === selectedHome) ?? homeTypes[0];
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#050B18] text-white">
-      {/* Fondo decorativo */}
-      <div className="pointer-events-none fixed inset-0">
-        <div className="absolute left-1/2 top-[-300px] h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-cyan-500/[0.08] blur-[120px]" />
+    <main
+      className={`min-h-screen overflow-x-hidden transition-colors duration-500 ${
+        isDark
+          ? "bg-[#07111F] text-white"
+          : "bg-[#F7FAFC] text-[#102033]"
+      } ${largeText ? "text-[17px]" : ""}`}
+    >
+      {/* =====================================================
+          FONDO DECORATIVO
+      ====================================================== */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div
+          className={`absolute -left-32 -top-40 h-[420px] w-[420px] rounded-full blur-[120px] transition-colors duration-700 ${
+            isDark ? "bg-cyan-500/[0.10]" : "bg-cyan-400/[0.12]"
+          }`}
+        />
 
         <div
-          className="absolute inset-0 opacity-[0.035]"
+          className={`absolute -bottom-40 -right-40 h-[500px] w-[500px] rounded-full blur-[140px] ${
+            isDark ? "bg-blue-600/[0.08]" : "bg-blue-400/[0.08]"
+          }`}
+        />
+
+        <div
+          className={`absolute inset-0 opacity-[0.035] ${
+            isDark ? "block" : "hidden"
+          }`}
           style={{
             backgroundImage:
               "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
@@ -22,251 +132,1113 @@ export default function Home() {
         />
       </div>
 
-      {/* Navbar */}
-      <header className="relative z-20 mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-10">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-cyan-400/20 bg-cyan-400/10">
-            <Wifi className="h-5 w-5 text-cyan-300" />
-          </div>
+      {/* =====================================================
+          NAVBAR
+      ====================================================== */}
+      <header
+        className={`relative z-50 border-b transition-colors duration-500 ${
+          isDark
+            ? "border-white/[0.07] bg-[#07111F]/80"
+            : "border-slate-200/80 bg-white/80"
+        } backdrop-blur-xl`}
+      >
+        <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-10">
+          {/* Logo */}
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="group flex items-center gap-3"
+            aria-label="Ir al inicio"
+          >
+            <div
+              className={`flex h-11 w-11 items-center justify-center rounded-[14px] border transition-all duration-300 group-hover:scale-105 ${
+                isDark
+                  ? "border-cyan-300/20 bg-cyan-300/[0.10]"
+                  : "border-cyan-600/20 bg-cyan-500/[0.10]"
+              }`}
+            >
+              <Wifi
+                className={`h-5 w-5 ${
+                  isDark ? "text-cyan-300" : "text-cyan-700"
+                }`}
+              />
+            </div>
 
-          <div>
-            <p className="text-[15px] font-bold tracking-[0.18em] text-white">
-              WIN
-            </p>
-            <p className="text-[9px] font-medium tracking-[0.22em] text-slate-500">
-              HOME CHECK
-            </p>
+            <div className="text-left">
+              <p
+                className={`text-[15px] font-extrabold tracking-[0.22em] ${
+                  isDark ? "text-white" : "text-[#102033]"
+                }`}
+              >
+                WIN
+              </p>
+              <p
+                className={`text-[9px] font-semibold tracking-[0.22em] ${
+                  isDark ? "text-slate-500" : "text-slate-500"
+                }`}
+              >
+                HOME CHECK
+              </p>
+            </div>
+          </button>
+
+          {/* Navegación desktop */}
+          <nav className="hidden items-center gap-8 lg:flex">
+            <a
+              href="#como-funciona"
+              className={`text-sm font-medium transition-colors ${
+                isDark
+                  ? "text-slate-400 hover:text-white"
+                  : "text-slate-600 hover:text-slate-950"
+              }`}
+            >
+              Cómo funciona
+            </a>
+
+            <a
+              href="#beneficios"
+              className={`text-sm font-medium transition-colors ${
+                isDark
+                  ? "text-slate-400 hover:text-white"
+                  : "text-slate-600 hover:text-slate-950"
+              }`}
+            >
+              Beneficios
+            </a>
+
+            <button
+              onClick={() => setShowHelp(true)}
+              className={`flex items-center gap-2 text-sm font-medium transition-colors ${
+                isDark
+                  ? "text-slate-400 hover:text-white"
+                  : "text-slate-600 hover:text-slate-950"
+              }`}
+            >
+              <CircleHelp className="h-4 w-4" />
+              Ayuda
+            </button>
+          </nav>
+
+          {/* Acciones */}
+          <div className="flex items-center gap-2">
+            {/* Accesibilidad */}
+            <button
+              onClick={() => setLargeText((current) => !current)}
+              className={`hidden h-10 items-center gap-2 rounded-xl border px-3 text-xs font-semibold transition-all sm:flex ${
+                largeText
+                  ? isDark
+                    ? "border-cyan-300/40 bg-cyan-300/10 text-cyan-200"
+                    : "border-cyan-600/30 bg-cyan-50 text-cyan-800"
+                  : isDark
+                    ? "border-white/10 text-slate-400 hover:border-white/20 hover:text-white"
+                    : "border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-950"
+              }`}
+              aria-label="Cambiar tamaño del texto"
+              title="Cambiar tamaño del texto"
+            >
+              <Eye className="h-4 w-4" />
+              <span>Texto {largeText ? "grande" : "normal"}</span>
+            </button>
+
+            {/* Tema */}
+            <button
+              onClick={toggleTheme}
+              className={`flex h-10 w-10 items-center justify-center rounded-xl border transition-all duration-300 ${
+                isDark
+                  ? "border-white/10 bg-white/[0.04] text-slate-300 hover:border-cyan-300/30 hover:text-cyan-200"
+                  : "border-slate-200 bg-white text-slate-600 hover:border-cyan-500/30 hover:text-cyan-700"
+              }`}
+              aria-label={
+                isDark ? "Activar modo claro" : "Activar modo oscuro"
+              }
+              title={isDark ? "Modo claro" : "Modo oscuro"}
+            >
+              {isDark ? (
+                <Sun className="h-[18px] w-[18px]" />
+              ) : (
+                <Moon className="h-[18px] w-[18px]" />
+              )}
+            </button>
+
+            {/* Menú móvil */}
+            <button
+              onClick={() => setMenuOpen((current) => !current)}
+              className={`flex h-10 w-10 items-center justify-center rounded-xl border lg:hidden ${
+                isDark
+                  ? "border-white/10 text-slate-300"
+                  : "border-slate-200 text-slate-600"
+              }`}
+              aria-label="Abrir menú"
+            >
+              {menuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
+            </button>
           </div>
         </div>
 
-        <nav className="hidden items-center gap-8 md:flex">
-          <a
-            href="#como-funciona"
-            className="text-sm text-slate-400 transition hover:text-white"
-          >
-            Cómo funciona
-          </a>
-
-          <a
-            href="#beneficios"
-            className="text-sm text-slate-400 transition hover:text-white"
-          >
-            Beneficios
-          </a>
-
-          <button className="rounded-lg border border-white/10 px-4 py-2 text-sm text-slate-300 transition hover:border-cyan-400/30 hover:text-white">
-            Ayuda
-          </button>
-        </nav>
-
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="rounded-lg border border-white/10 p-2 text-slate-300 md:hidden"
-          aria-label="Abrir menú"
+        {/* Menú móvil */}
+        <div
+          className={`overflow-hidden transition-all duration-300 lg:hidden ${
+            menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          }`}
         >
-          {menuOpen ? (
-            <X className="h-5 w-5" />
-          ) : (
-            <Menu className="h-5 w-5" />
-          )}
-        </button>
-      </header>
+          <nav
+            className={`border-t px-5 py-5 sm:px-8 ${
+              isDark
+                ? "border-white/[0.07] bg-[#081525]"
+                : "border-slate-200 bg-white"
+            }`}
+          >
+            <div className="flex flex-col gap-1">
+              <a
+                href="#como-funciona"
+                onClick={() => setMenuOpen(false)}
+                className={`rounded-xl px-4 py-3.5 text-base font-medium ${
+                  isDark
+                    ? "text-slate-300 hover:bg-white/[0.05]"
+                    : "text-slate-700 hover:bg-slate-50"
+                }`}
+              >
+                Cómo funciona
+              </a>
 
-      {/* Menú móvil */}
-      {menuOpen && (
-        <div className="relative z-30 border-y border-white/10 bg-[#081121] px-6 py-5 md:hidden">
-          <nav className="flex flex-col gap-4 text-sm text-slate-300">
-            <a href="#como-funciona">Cómo funciona</a>
-            <a href="#beneficios">Beneficios</a>
-            <a href="#diagnostico">Iniciar diagnóstico</a>
+              <a
+                href="#beneficios"
+                onClick={() => setMenuOpen(false)}
+                className={`rounded-xl px-4 py-3.5 text-base font-medium ${
+                  isDark
+                    ? "text-slate-300 hover:bg-white/[0.05]"
+                    : "text-slate-700 hover:bg-slate-50"
+                }`}
+              >
+                Beneficios
+              </a>
+
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  setShowHelp(true);
+                }}
+                className={`flex items-center gap-3 rounded-xl px-4 py-3.5 text-left text-base font-medium ${
+                  isDark
+                    ? "text-slate-300 hover:bg-white/[0.05]"
+                    : "text-slate-700 hover:bg-slate-50"
+                }`}
+              >
+                <CircleHelp className="h-5 w-5" />
+                Ayuda
+              </button>
+
+              <button
+                onClick={() => setLargeText((current) => !current)}
+                className={`flex items-center gap-3 rounded-xl px-4 py-3.5 text-left text-base font-medium ${
+                  isDark
+                    ? "text-slate-300 hover:bg-white/[0.05]"
+                    : "text-slate-700 hover:bg-slate-50"
+                }`}
+              >
+                <Eye className="h-5 w-5" />
+                Texto {largeText ? "grande activado" : "normal"}
+              </button>
+            </div>
           </nav>
         </div>
-      )}
+      </header>
 
-      {/* Hero */}
-      <section className="relative z-10 mx-auto flex min-h-[calc(100vh-80px)] max-w-7xl items-center px-6 py-16 lg:px-10 lg:py-20">
-        <div className="grid w-full items-center gap-16 lg:grid-cols-[1.05fr_0.95fr]">
-          {/* Texto */}
+      {/* =====================================================
+          HERO PRINCIPAL
+      ====================================================== */}
+      <section className="relative z-10">
+        <div className="mx-auto grid min-h-[calc(100vh-76px)] max-w-7xl items-center gap-12 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[1fr_0.9fr] lg:gap-16 lg:px-10 lg:py-16">
+          {/* Columna izquierda */}
           <div className="max-w-2xl">
-            <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/[0.07] px-3.5 py-2">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-cyan-300" />
-              <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-cyan-200">
+            {/* Badge */}
+            <div
+              className={`mb-7 inline-flex items-center gap-2 rounded-full border px-3.5 py-2.5 ${
+                isDark
+                  ? "border-cyan-300/20 bg-cyan-300/[0.07]"
+                  : "border-cyan-600/20 bg-cyan-50"
+              }`}
+            >
+              <Sparkles
+                className={`h-4 w-4 ${
+                  isDark ? "text-cyan-300" : "text-cyan-700"
+                }`}
+              />
+
+              <span
+                className={`text-[11px] font-bold uppercase tracking-[0.16em] ${
+                  isDark ? "text-cyan-200" : "text-cyan-800"
+                }`}
+              >
                 Diagnóstico inteligente de conectividad
               </span>
             </div>
 
-            <h1 className="text-4xl font-semibold leading-[1.08] tracking-[-0.04em] text-white sm:text-5xl lg:text-[4.4rem]">
-              Conoce cómo funciona tu{" "}
-              <span className="bg-gradient-to-r from-cyan-300 via-sky-400 to-blue-500 bg-clip-text text-transparent">
+            {/* Título */}
+            <h1
+              className={`text-[2.65rem] font-extrabold leading-[1.08] tracking-[-0.045em] sm:text-5xl lg:text-[4.25rem] ${
+                isDark ? "text-white" : "text-[#102033]"
+              }`}
+            >
+              Descubre cómo funciona tu{" "}
+              <span className="bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 bg-clip-text text-transparent">
                 WiFi
               </span>{" "}
-              en cada rincón de tu hogar.
+              en tu hogar.
             </h1>
 
-            <p className="mt-7 max-w-xl text-base leading-7 text-slate-400 sm:text-lg">
-              Recorre tu casa con el celular y descubre dónde tu conexión
-              ofrece una buena experiencia y dónde podría estar perdiendo
-              calidad.
+            {/* Descripción */}
+            <p
+              className={`mt-7 max-w-xl text-lg leading-8 sm:text-xl ${
+                isDark ? "text-slate-400" : "text-slate-600"
+              }`}
+            >
+              Recorre tu casa con tu celular y descubre dónde tu conexión
+              funciona bien y dónde podría estar perdiendo calidad.
             </p>
 
+            {/* Selector de espacio */}
+            <div className="mt-8">
+              <p
+                className={`mb-3 text-sm font-semibold ${
+                  isDark ? "text-slate-300" : "text-slate-700"
+                }`}
+              >
+                ¿Qué espacio quieres revisar?
+              </p>
+
+              <div className="flex flex-wrap gap-2.5">
+                {homeTypes.map((item) => {
+                  const Icon = item.icon;
+                  const isSelected = selectedHome === item.id;
+
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => setSelectedHome(item.id)}
+                      className={`flex items-center gap-2 rounded-xl border px-4 py-3 text-sm font-semibold transition-all duration-300 ${
+                        isSelected
+                          ? isDark
+                            ? "border-cyan-300/40 bg-cyan-300/10 text-cyan-200 shadow-[0_0_20px_rgba(34,211,238,0.08)]"
+                            : "border-cyan-600/40 bg-cyan-50 text-cyan-800"
+                          : isDark
+                            ? "border-white/10 bg-white/[0.03] text-slate-400 hover:border-white/20 hover:text-white"
+                            : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-950"
+                      }`}
+                    >
+                      <Icon className="h-4 w-4" />
+                      {item.label}
+                      {isSelected && <Check className="h-4 w-4" />}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <p
+                className={`mt-3 text-sm ${
+                  isDark ? "text-slate-500" : "text-slate-500"
+                }`}
+              >
+                {selectedHomeData.description}
+              </p>
+            </div>
+
+            {/* CTA */}
             <div className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
               <button
-                id="diagnostico"
-                className="group flex w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-6 py-4 text-sm font-bold text-slate-950 shadow-[0_0_35px_rgba(34,211,238,0.18)] transition duration-300 hover:scale-[1.02] hover:shadow-[0_0_45px_rgba(34,211,238,0.3)] sm:w-auto"
+                onClick={handleStart}
+                disabled={isStarting}
+                className="group flex min-h-[58px] w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-7 text-base font-extrabold text-white shadow-[0_12px_35px_rgba(14,165,233,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_45px_rgba(14,165,233,0.32)] active:scale-[0.98] disabled:cursor-wait disabled:opacity-80 sm:w-auto"
               >
-                Iniciar diagnóstico
-                <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                {isStarting ? (
+                  <>
+                    <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    Preparando...
+                  </>
+                ) : (
+                  <>
+                    Iniciar diagnóstico
+                    <ArrowRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+                  </>
+                )}
               </button>
 
-              <span className="text-xs text-slate-500">
-                Sin instalar ninguna aplicación
-              </span>
+              <div
+                className={`flex items-center gap-2 text-sm ${
+                  isDark ? "text-slate-500" : "text-slate-500"
+                }`}
+              >
+                <ShieldCheck className="h-4 w-4 text-emerald-500" />
+                No necesitas instalar nada
+              </div>
             </div>
 
-            {/* Mini beneficios */}
+            {/* Confianza */}
             <div
-              id="beneficios"
-              className="mt-14 grid max-w-lg grid-cols-3 gap-4 border-t border-white/[0.08] pt-7"
+              className={`mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 border-t pt-7 ${
+                isDark ? "border-white/[0.08]" : "border-slate-200"
+              }`}
             >
-              <div>
-                <Activity className="mb-3 h-4 w-4 text-cyan-300" />
-                <p className="text-sm font-medium text-slate-200">
-                  Medición real
-                </p>
-                <p className="mt-1 text-xs leading-5 text-slate-500">
-                  Durante tu recorrido
-                </p>
+              <div className="flex items-center gap-2">
+                <div
+                  className={`flex h-8 w-8 items-center justify-center rounded-lg ${
+                    isDark ? "bg-white/[0.06]" : "bg-slate-100"
+                  }`}
+                >
+                  <Zap
+                    className={`h-4 w-4 ${
+                      isDark ? "text-cyan-300" : "text-cyan-700"
+                    }`}
+                  />
+                </div>
+                <span
+                  className={`text-sm font-medium ${
+                    isDark ? "text-slate-400" : "text-slate-600"
+                  }`}
+                >
+                  Fácil de usar
+                </span>
               </div>
 
-              <div>
-                <Wifi className="mb-3 h-4 w-4 text-cyan-300" />
-                <p className="text-sm font-medium text-slate-200">
-                  Por zonas
-                </p>
-                <p className="mt-1 text-xs leading-5 text-slate-500">
-                  Identifica cambios
-                </p>
+              <div className="flex items-center gap-2">
+                <div
+                  className={`flex h-8 w-8 items-center justify-center rounded-lg ${
+                    isDark ? "bg-white/[0.06]" : "bg-slate-100"
+                  }`}
+                >
+                  <Activity
+                    className={`h-4 w-4 ${
+                      isDark ? "text-cyan-300" : "text-cyan-700"
+                    }`}
+                  />
+                </div>
+                <span
+                  className={`text-sm font-medium ${
+                    isDark ? "text-slate-400" : "text-slate-600"
+                  }`}
+                >
+                  Resultados claros
+                </span>
               </div>
 
-              <div>
-                <ArrowRight className="mb-3 h-4 w-4 text-cyan-300" />
-                <p className="text-sm font-medium text-slate-200">
-                  Reporte claro
-                </p>
-                <p className="mt-1 text-xs leading-5 text-slate-500">
-                  Entiende el resultado
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Visual */}
-          <div className="relative flex min-h-[420px] items-center justify-center lg:min-h-[560px]">
-            {/* Glow */}
-            <div className="absolute h-72 w-72 rounded-full bg-cyan-400/[0.08] blur-[90px]" />
-
-            {/* Anillos */}
-            <div className="absolute h-[330px] w-[330px] rounded-full border border-cyan-300/[0.08]" />
-            <div className="absolute h-[240px] w-[240px] rounded-full border border-cyan-300/[0.12]" />
-            <div className="absolute h-[150px] w-[150px] rounded-full border border-cyan-300/[0.16]" />
-
-            {/* Líneas de conexión */}
-            <div className="absolute h-px w-[330px] rotate-45 bg-gradient-to-r from-transparent via-cyan-300/20 to-transparent" />
-            <div className="absolute h-px w-[330px] -rotate-45 bg-gradient-to-r from-transparent via-cyan-300/20 to-transparent" />
-
-            {/* Tarjeta central */}
-            <div className="relative z-10 flex h-52 w-52 flex-col items-center justify-center rounded-[2rem] border border-white/[0.12] bg-[#0B172B]/95 shadow-2xl shadow-cyan-950/40 backdrop-blur-xl">
-              <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-b from-cyan-400/[0.08] to-transparent" />
-
-              <div className="relative mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-400/10">
-                <Wifi className="h-8 w-8 text-cyan-300" />
-              </div>
-
-              <p className="relative text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-                Tu conexión
-              </p>
-
-              <p className="relative mt-2 text-lg font-semibold text-white">
-                Lista para medir
-              </p>
-            </div>
-
-            {/* Puntos flotantes */}
-            <div className="absolute left-[5%] top-[24%] flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/[0.08] px-3 py-2 backdrop-blur-md">
-              <span className="h-2 w-2 rounded-full bg-emerald-400" />
-              <span className="text-[10px] font-medium text-emerald-200">
-                Buena señal
-              </span>
-            </div>
-
-            <div className="absolute right-[0%] top-[18%] flex items-center gap-2 rounded-full border border-blue-400/20 bg-blue-400/[0.08] px-3 py-2 backdrop-blur-md">
-              <span className="h-2 w-2 rounded-full bg-blue-400" />
-              <span className="text-[10px] font-medium text-blue-200">
-                Medición activa
-              </span>
-            </div>
-
-            <div className="absolute bottom-[18%] left-[8%] flex items-center gap-2 rounded-full border border-amber-400/20 bg-amber-400/[0.08] px-3 py-2 backdrop-blur-md">
-              <span className="h-2 w-2 rounded-full bg-amber-400" />
-              <span className="text-[10px] font-medium text-amber-200">
-                Zona por revisar
-              </span>
-            </div>
-
-            <div className="absolute bottom-[12%] right-[5%] hidden rounded-2xl border border-white/[0.08] bg-[#0B172B]/80 p-4 backdrop-blur-md sm:block">
-              <p className="text-[10px] uppercase tracking-wider text-slate-500">
-                Experiencia
-              </p>
-              <div className="mt-2 flex items-end gap-1">
-                <span className="text-2xl font-semibold text-white">360°</span>
-                <span className="mb-1 text-xs text-slate-500">
-                  de tu hogar
+              <div className="flex items-center gap-2">
+                <div
+                  className={`flex h-8 w-8 items-center justify-center rounded-lg ${
+                    isDark ? "bg-white/[0.06]" : "bg-slate-100"
+                  }`}
+                >
+                  <Home
+                    className={`h-4 w-4 ${
+                      isDark ? "text-cyan-300" : "text-cyan-700"
+                    }`}
+                  />
+                </div>
+                <span
+                  className={`text-sm font-medium ${
+                    isDark ? "text-slate-400" : "text-slate-600"
+                  }`}
+                >
+                  Pensado para tu hogar
                 </span>
               </div>
             </div>
           </div>
+
+          {/* =================================================
+              VISUAL INTERACTIVO
+          ================================================== */}
+          <div className="relative flex min-h-[420px] items-center justify-center lg:min-h-[570px]">
+            {/* Glow */}
+            <div
+              className={`absolute h-72 w-72 rounded-full blur-[100px] ${
+                isDark ? "bg-cyan-400/[0.12]" : "bg-cyan-400/[0.14]"
+              }`}
+            />
+
+            {/* Anillos de conectividad */}
+            <div
+              className={`absolute h-[340px] w-[340px] animate-[spin_30s_linear_infinite] rounded-full border border-dashed ${
+                isDark ? "border-cyan-300/[0.10]" : "border-cyan-700/[0.12]"
+              }`}
+            />
+
+            <div
+              className={`absolute h-[270px] w-[270px] rounded-full border ${
+                isDark ? "border-cyan-300/[0.12]" : "border-cyan-700/[0.14]"
+              }`}
+            />
+
+            <div
+              className={`absolute h-[200px] w-[200px] rounded-full border ${
+                isDark ? "border-cyan-300/[0.16]" : "border-cyan-700/[0.16]"
+              }`}
+            />
+
+            {/* Líneas */}
+            <div
+              className={`absolute h-px w-[340px] rotate-45 ${
+                isDark
+                  ? "bg-gradient-to-r from-transparent via-cyan-300/20 to-transparent"
+                  : "bg-gradient-to-r from-transparent via-cyan-600/20 to-transparent"
+              }`}
+            />
+
+            <div
+              className={`absolute h-px w-[340px] -rotate-45 ${
+                isDark
+                  ? "bg-gradient-to-r from-transparent via-cyan-300/20 to-transparent"
+                  : "bg-gradient-to-r from-transparent via-cyan-600/20 to-transparent"
+              }`}
+            />
+
+            {/* Tarjeta central */}
+            <div
+              className={`relative z-10 flex h-[230px] w-[230px] flex-col items-center justify-center rounded-[2.2rem] border shadow-2xl backdrop-blur-xl transition-all duration-500 ${
+                isDark
+                  ? "border-white/[0.13] bg-[#0D1B30]/95 shadow-cyan-950/40"
+                  : "border-slate-200 bg-white/95 shadow-slate-300/40"
+              }`}
+            >
+              <div
+                className={`absolute inset-0 rounded-[2.2rem] bg-gradient-to-b ${
+                  isDark
+                    ? "from-cyan-400/[0.09] to-transparent"
+                    : "from-cyan-400/[0.08] to-transparent"
+                }`}
+              />
+
+              <div
+                className={`relative mb-5 flex h-[72px] w-[72px] items-center justify-center rounded-2xl border ${
+                  isDark
+                    ? "border-cyan-300/20 bg-cyan-300/10"
+                    : "border-cyan-600/20 bg-cyan-50"
+                }`}
+              >
+                <Wifi
+                  className={`h-9 w-9 ${
+                    isDark ? "text-cyan-300" : "text-cyan-700"
+                  }`}
+                />
+
+                <span className="absolute -right-1 -top-1 h-3.5 w-3.5 animate-pulse rounded-full border-2 border-[#0D1B30] bg-emerald-400" />
+              </div>
+
+              <p
+                className={`relative text-xs font-bold uppercase tracking-[0.2em] ${
+                  isDark ? "text-slate-500" : "text-slate-500"
+                }`}
+              >
+                Tu conexión
+              </p>
+
+              <p
+                className={`relative mt-2 text-xl font-bold ${
+                  isDark ? "text-white" : "text-[#102033]"
+                }`}
+              >
+                Lista para medir
+              </p>
+
+              <p
+                className={`relative mt-2 text-center text-xs ${
+                  isDark ? "text-slate-500" : "text-slate-500"
+                }`}
+              >
+                {selectedHomeData.label} seleccionada
+              </p>
+            </div>
+
+            {/* Tarjeta: buena experiencia */}
+            <div
+              className={`absolute left-0 top-[14%] z-20 flex items-center gap-3 rounded-2xl border px-4 py-3 shadow-xl backdrop-blur-md transition-all duration-500 hover:-translate-y-1 ${
+                isDark
+                  ? "border-emerald-400/20 bg-[#0C1C2C]/90 shadow-emerald-950/20"
+                  : "border-emerald-200 bg-white/95 shadow-emerald-100"
+              }`}
+            >
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10">
+                <Check className="h-4 w-4 text-emerald-500" />
+              </div>
+
+              <div>
+                <p
+                  className={`text-xs font-bold ${
+                    isDark ? "text-emerald-200" : "text-emerald-700"
+                  }`}
+                >
+                  Buena experiencia
+                </p>
+                <p
+                  className={`mt-0.5 text-[11px] ${
+                    isDark ? "text-slate-500" : "text-slate-500"
+                  }`}
+                >
+                  Zona estable
+                </p>
+              </div>
+            </div>
+
+            {/* Tarjeta: medición */}
+            <div
+              className={`absolute right-0 top-[8%] z-20 flex items-center gap-3 rounded-2xl border px-4 py-3 shadow-xl backdrop-blur-md transition-all duration-500 hover:-translate-y-1 ${
+                isDark
+                  ? "border-blue-400/20 bg-[#0C1C2C]/90 shadow-blue-950/20"
+                  : "border-blue-200 bg-white/95 shadow-blue-100"
+              }`}
+            >
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500/10">
+                <Activity className="h-4 w-4 text-blue-500" />
+              </div>
+
+              <div>
+                <p
+                  className={`text-xs font-bold ${
+                    isDark ? "text-blue-200" : "text-blue-700"
+                  }`}
+                >
+                  Medición en vivo
+                </p>
+                <p
+                  className={`mt-0.5 text-[11px] ${
+                    isDark ? "text-slate-500" : "text-slate-500"
+                  }`}
+                >
+                  Mientras recorres
+                </p>
+              </div>
+            </div>
+
+            {/* Tarjeta: zona por revisar */}
+            <div
+              className={`absolute bottom-[14%] left-[2%] z-20 flex items-center gap-3 rounded-2xl border px-4 py-3 shadow-xl backdrop-blur-md transition-all duration-500 hover:-translate-y-1 ${
+                isDark
+                  ? "border-amber-400/20 bg-[#0C1C2C]/90 shadow-amber-950/20"
+                  : "border-amber-200 bg-white/95 shadow-amber-100"
+              }`}
+            >
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10">
+                <Activity className="h-4 w-4 text-amber-500" />
+              </div>
+
+              <div>
+                <p
+                  className={`text-xs font-bold ${
+                    isDark ? "text-amber-200" : "text-amber-700"
+                  }`}
+                >
+                  Zona por revisar
+                </p>
+                <p
+                  className={`mt-0.5 text-[11px] ${
+                    isDark ? "text-slate-500" : "text-slate-500"
+                  }`}
+                >
+                  Detecta cambios
+                </p>
+              </div>
+            </div>
+
+            {/* Mini tarjeta inferior */}
+            <div
+              className={`absolute bottom-[8%] right-[0%] hidden rounded-2xl border p-4 shadow-xl backdrop-blur-md sm:block ${
+                isDark
+                  ? "border-white/[0.10] bg-[#0C1C2C]/90"
+                  : "border-slate-200 bg-white/95"
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <div className="h-2 w-2 animate-pulse rounded-full bg-cyan-500" />
+                <p
+                  className={`text-[10px] font-bold uppercase tracking-[0.16em] ${
+                    isDark ? "text-slate-500" : "text-slate-500"
+                  }`}
+                >
+                  Experiencia del hogar
+                </p>
+              </div>
+
+              <p
+                className={`mt-2 text-2xl font-extrabold ${
+                  isDark ? "text-white" : "text-[#102033]"
+                }`}
+              >
+                360°
+              </p>
+
+              <p
+                className={`mt-1 text-xs ${
+                  isDark ? "text-slate-500" : "text-slate-500"
+                }`}
+              >
+                Una visión más completa
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Franja inferior */}
+      {/* =====================================================
+          SECCIÓN CÓMO FUNCIONA
+      ====================================================== */}
       <section
         id="como-funciona"
-        className="relative z-10 border-t border-white/[0.06] bg-white/[0.015]"
+        className={`relative z-10 border-t ${
+          isDark
+            ? "border-white/[0.07] bg-white/[0.015]"
+            : "border-slate-200 bg-white"
+        }`}
       >
-        <div className="mx-auto grid max-w-7xl gap-8 px-6 py-8 sm:grid-cols-3 lg:px-10">
-          <div className="flex gap-4">
-            <span className="text-xs font-semibold text-cyan-300">01</span>
-            <div>
-              <p className="text-sm font-medium text-white">Inicia la prueba</p>
-              <p className="mt-1 text-xs text-slate-500">
-                Desde tu navegador.
-              </p>
-            </div>
+        <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-24">
+          <div className="mx-auto max-w-2xl text-center">
+            <p
+              className={`text-xs font-bold uppercase tracking-[0.2em] ${
+                isDark ? "text-cyan-300" : "text-cyan-700"
+              }`}
+            >
+              Así de sencillo
+            </p>
+
+            <h2
+              className={`mt-4 text-3xl font-extrabold tracking-[-0.035em] sm:text-4xl ${
+                isDark ? "text-white" : "text-[#102033]"
+              }`}
+            >
+              Entender tu conexión no debería ser complicado.
+            </h2>
+
+            <p
+              className={`mt-5 text-lg leading-8 ${
+                isDark ? "text-slate-400" : "text-slate-600"
+              }`}
+            >
+              Te acompañamos paso a paso para que conozcas cómo se comporta
+              tu internet en los espacios que más utilizas.
+            </p>
           </div>
 
-          <div className="flex gap-4">
-            <span className="text-xs font-semibold text-cyan-300">02</span>
-            <div>
-              <p className="text-sm font-medium text-white">Recorre tu hogar</p>
-              <p className="mt-1 text-xs text-slate-500">
-                Mide la experiencia en distintas zonas.
-              </p>
-            </div>
-          </div>
+          <div className="mt-14 grid gap-5 md:grid-cols-3">
+            {[
+              {
+                number: "01",
+                icon: Zap,
+                title: "Inicia la medición",
+                description:
+                  "Presiona un botón y comienza. No necesitas instalar aplicaciones ni configurar equipos.",
+              },
+              {
+                number: "02",
+                icon: Home,
+                title: "Recorre tu hogar",
+                description:
+                  "Camina por los espacios que quieras revisar mientras registramos la experiencia de conexión.",
+              },
+              {
+                number: "03",
+                icon: Activity,
+                title: "Comprende el resultado",
+                description:
+                  "Recibe un diagnóstico visual, sencillo y útil para identificar las zonas que necesitan atención.",
+              },
+            ].map((step) => {
+              const Icon = step.icon;
 
-          <div className="flex gap-4">
-            <span className="text-xs font-semibold text-cyan-300">03</span>
+              return (
+                <div
+                  key={step.number}
+                  className={`group relative rounded-3xl border p-7 transition-all duration-300 hover:-translate-y-1 ${
+                    isDark
+                      ? "border-white/[0.08] bg-[#0B1729] hover:border-cyan-300/20"
+                      : "border-slate-200 bg-white shadow-sm hover:border-cyan-300/50 hover:shadow-lg"
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div
+                      className={`flex h-12 w-12 items-center justify-center rounded-2xl ${
+                        isDark ? "bg-cyan-300/10" : "bg-cyan-50"
+                      }`}
+                    >
+                      <Icon
+                        className={`h-5 w-5 ${
+                          isDark ? "text-cyan-300" : "text-cyan-700"
+                        }`}
+                      />
+                    </div>
+
+                    <span
+                      className={`text-sm font-bold ${
+                        isDark ? "text-slate-700" : "text-slate-300"
+                      }`}
+                    >
+                      {step.number}
+                    </span>
+                  </div>
+
+                  <h3
+                    className={`mt-7 text-xl font-bold ${
+                      isDark ? "text-white" : "text-[#102033]"
+                    }`}
+                  >
+                    {step.title}
+                  </h3>
+
+                  <p
+                    className={`mt-3 text-base leading-7 ${
+                      isDark ? "text-slate-400" : "text-slate-600"
+                    }`}
+                  >
+                    {step.description}
+                  </p>
+
+                  <div
+                    className={`mt-7 flex items-center gap-2 text-sm font-bold ${
+                      isDark ? "text-cyan-300" : "text-cyan-700"
+                    }`}
+                  >
+                    Fácil y guiado
+                    <MoveRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* =====================================================
+          BENEFICIOS
+      ====================================================== */}
+      <section
+        id="beneficios"
+        className={`relative z-10 ${
+          isDark ? "bg-[#07111F]" : "bg-[#F7FAFC]"
+        }`}
+      >
+        <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-24">
+          <div className="grid items-center gap-14 lg:grid-cols-[0.9fr_1.1fr]">
             <div>
-              <p className="text-sm font-medium text-white">
-                Obtén tu diagnóstico
+              <p
+                className={`text-xs font-bold uppercase tracking-[0.2em] ${
+                  isDark ? "text-cyan-300" : "text-cyan-700"
+                }`}
+              >
+                Más que una prueba
               </p>
-              <p className="mt-1 text-xs text-slate-500">
-                Comprende dónde mejorar tu conexión.
+
+              <h2
+                className={`mt-4 text-3xl font-extrabold leading-tight tracking-[-0.035em] sm:text-4xl ${
+                  isDark ? "text-white" : "text-[#102033]"
+                }`}
+              >
+                No se trata solo de ver números.
+                <span
+                  className={`block ${
+                    isDark ? "text-slate-400" : "text-slate-500"
+                  }`}
+                >
+                  Se trata de entender tu hogar.
+                </span>
+              </h2>
+
+              <p
+                className={`mt-6 text-lg leading-8 ${
+                  isDark ? "text-slate-400" : "text-slate-600"
+                }`}
+              >
+                WIN HOME CHECK transforma los datos de conectividad en
+                información que cualquier persona puede comprender.
               </p>
+
+              <button
+                onClick={handleStart}
+                className={`group mt-8 flex items-center gap-3 rounded-xl border px-5 py-3.5 text-sm font-bold transition-all ${
+                  isDark
+                    ? "border-cyan-300/20 bg-cyan-300/[0.06] text-cyan-200 hover:border-cyan-300/40 hover:bg-cyan-300/10"
+                    : "border-cyan-600/20 bg-cyan-50 text-cyan-800 hover:border-cyan-600/40 hover:bg-cyan-100"
+                }`}
+              >
+                Conocer mi conexión
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </button>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              {[
+                {
+                  icon: Wifi,
+                  title: "Información clara",
+                  text: "Resultados explicados con palabras sencillas.",
+                },
+                {
+                  icon: Network,
+                  title: "Por espacios",
+                  text: "Identifica cómo cambia la experiencia en tu hogar.",
+                },
+                {
+                  icon: Activity,
+                  title: "Recorrido real",
+                  text: "Observa el comportamiento de la conexión mientras te mueves.",
+                },
+                {
+                  icon: ShieldCheck,
+                  title: "Sin complicaciones",
+                  text: "Una experiencia pensada para cualquier usuario.",
+                },
+              ].map((benefit) => {
+                const Icon = benefit.icon;
+
+                return (
+                  <div
+                    key={benefit.title}
+                    className={`rounded-2xl border p-6 ${
+                      isDark
+                        ? "border-white/[0.08] bg-[#0B1729]"
+                        : "border-slate-200 bg-white shadow-sm"
+                    }`}
+                  >
+                    <div
+                      className={`mb-5 flex h-11 w-11 items-center justify-center rounded-xl ${
+                        isDark ? "bg-cyan-300/10" : "bg-cyan-50"
+                      }`}
+                    >
+                      <Icon
+                        className={`h-5 w-5 ${
+                          isDark ? "text-cyan-300" : "text-cyan-700"
+                        }`}
+                      />
+                    </div>
+
+                    <h3
+                      className={`text-lg font-bold ${
+                        isDark ? "text-white" : "text-[#102033]"
+                      }`}
+                    >
+                      {benefit.title}
+                    </h3>
+
+                    <p
+                      className={`mt-2 text-sm leading-6 ${
+                        isDark ? "text-slate-400" : "text-slate-600"
+                      }`}
+                    >
+                      {benefit.text}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
       </section>
+
+      {/* =====================================================
+          CTA FINAL
+      ====================================================== */}
+      <section className="relative z-10 px-5 py-12 sm:px-8 lg:px-10 lg:py-20">
+        <div
+          className={`relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] border px-6 py-14 text-center sm:px-12 lg:py-20 ${
+            isDark
+              ? "border-cyan-300/15 bg-gradient-to-br from-[#0B2035] via-[#0B1729] to-[#101B35]"
+              : "border-cyan-200 bg-gradient-to-br from-cyan-50 via-white to-blue-50"
+          }`}
+        >
+          <div
+            className={`pointer-events-none absolute left-1/2 top-0 h-56 w-56 -translate-x-1/2 rounded-full blur-[100px] ${
+              isDark ? "bg-cyan-400/[0.10]" : "bg-cyan-400/[0.15]"
+            }`}
+          />
+
+          <div className="relative">
+            <div
+              className={`mx-auto flex h-14 w-14 items-center justify-center rounded-2xl ${
+                isDark ? "bg-cyan-300/10" : "bg-cyan-100"
+              }`}
+            >
+              <Wifi
+                className={`h-7 w-7 ${
+                  isDark ? "text-cyan-300" : "text-cyan-700"
+                }`}
+              />
+            </div>
+
+            <h2
+              className={`mx-auto mt-7 max-w-2xl text-3xl font-extrabold tracking-[-0.035em] sm:text-4xl ${
+                isDark ? "text-white" : "text-[#102033]"
+              }`}
+            >
+              Empieza a conocer la experiencia de tu WiFi.
+            </h2>
+
+            <p
+              className={`mx-auto mt-5 max-w-xl text-lg leading-8 ${
+                isDark ? "text-slate-400" : "text-slate-600"
+              }`}
+            >
+              Una medición sencilla para tomar mejores decisiones sobre tu
+              conectividad.
+            </p>
+
+            <button
+              onClick={handleStart}
+              className="group mt-8 inline-flex min-h-[56px] items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-7 text-base font-extrabold text-white shadow-lg shadow-cyan-500/20 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-cyan-500/30"
+            >
+              Iniciar diagnóstico
+              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* =====================================================
+          FOOTER
+      ====================================================== */}
+      <footer
+        className={`relative z-10 border-t ${
+          isDark
+            ? "border-white/[0.07] bg-[#050C16]"
+            : "border-slate-200 bg-white"
+        }`}
+      >
+        <div className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-8 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-10">
+          <div className="flex items-center gap-3">
+            <div
+              className={`flex h-9 w-9 items-center justify-center rounded-xl ${
+                isDark ? "bg-cyan-300/10" : "bg-cyan-50"
+              }`}
+            >
+              <Wifi
+                className={`h-4 w-4 ${
+                  isDark ? "text-cyan-300" : "text-cyan-700"
+                }`}
+              />
+            </div>
+
+            <div>
+              <p
+                className={`text-xs font-bold tracking-[0.18em] ${
+                  isDark ? "text-white" : "text-[#102033]"
+                }`}
+              >
+                WIN HOME CHECK
+              </p>
+              <p
+                className={`mt-1 text-xs ${
+                  isDark ? "text-slate-600" : "text-slate-500"
+                }`}
+              >
+                Conectividad más fácil de entender.
+              </p>
+            </div>
+          </div>
+
+          <p
+            className={`text-xs ${
+              isDark ? "text-slate-600" : "text-slate-500"
+            }`}
+          >
+            Herramienta de diagnóstico de experiencia de conectividad.
+          </p>
+        </div>
+      </footer>
+
+      {/* =====================================================
+          MODAL DE AYUDA
+      ====================================================== */}
+      {showHelp && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/60 px-5 backdrop-blur-sm"
+          onClick={() => setShowHelp(false)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="help-title"
+            className={`w-full max-w-md rounded-3xl border p-7 shadow-2xl ${
+              isDark
+                ? "border-white/10 bg-[#0D1B30]"
+                : "border-slate-200 bg-white"
+            }`}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-start justify-between">
+              <div>
+                <div
+                  className={`mb-4 flex h-12 w-12 items-center justify-center rounded-2xl ${
+                    isDark ? "bg-cyan-300/10" : "bg-cyan-50"
+                  }`}
+                >
+                  <CircleHelp
+                    className={`h-6 w-6 ${
+                      isDark ? "text-cyan-300" : "text-cyan-700"
+                    }`}
+                  />
+                </div>
+
+                <h2
+                  id="help-title"
+                  className={`text-2xl font-bold ${
+                    isDark ? "text-white" : "text-[#102033]"
+                  }`}
+                >
+                  ¿Cómo funciona?
+                </h2>
+              </div>
+
+              <button
+                onClick={() => setShowHelp(false)}
+                className={`rounded-xl p-2 ${
+                  isDark
+                    ? "text-slate-400 hover:bg-white/5 hover:text-white"
+                    : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+                }`}
+                aria-label="Cerrar ayuda"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <p
+              className={`mt-5 text-base leading-7 ${
+                isDark ? "text-slate-400" : "text-slate-600"
+              }`}
+            >
+              WIN HOME CHECK te permite evaluar la experiencia de conectividad
+              desde tu navegador mientras recorres los espacios de tu hogar.
+            </p>
+
+            <div
+              className={`mt-5 rounded-2xl p-4 ${
+                isDark ? "bg-white/[0.04]" : "bg-slate-50"
+              }`}
+            >
+              <p
+                className={`text-sm font-semibold ${
+                  isDark ? "text-slate-200" : "text-slate-800"
+                }`}
+              >
+                No necesitas conocimientos técnicos.
+              </p>
+              <p
+                className={`mt-2 text-sm leading-6 ${
+                  isDark ? "text-slate-500" : "text-slate-600"
+                }`}
+              >
+                Solo inicia la prueba, sigue las indicaciones y revisa el
+                resultado.
+              </p>
+            </div>
+
+            <button
+              onClick={() => setShowHelp(false)}
+              className="mt-6 flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 py-3.5 text-sm font-bold text-white"
+            >
+              Entendido
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
