@@ -1,27 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Activity,
   ArrowRight,
   Check,
-  ChevronDown,
   CircleHelp,
-  Eye,
   Home,
   Menu,
-  Moon,
   MoveRight,
   Network,
   ShieldCheck,
   Sparkles,
-  Sun,
   Wifi,
   X,
   Zap,
 } from "lucide-react";
-
-type Theme = "light" | "dark";
 
 const homeTypes = [
   {
@@ -45,51 +40,19 @@ const homeTypes = [
 ];
 
 export default function HomePage() {
-  const [theme, setTheme] = useState<Theme>("dark");
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedHome, setSelectedHome] = useState("casa");
-  const [largeText, setLargeText] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
-
-  // Detectar tema del sistema al cargar
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("win-home-theme") as Theme | null;
-
-    if (savedTheme === "light" || savedTheme === "dark") {
-      setTheme(savedTheme);
-      return;
-    }
-
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-
-    setTheme(prefersDark ? "dark" : "light");
-  }, []);
-
-  // Aplicar tema al documento
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
-    localStorage.setItem("win-home-theme", theme);
-  }, [theme]);
-
-  const isDark = theme === "dark";
-
-  const toggleTheme = () => {
-    setTheme((current) => (current === "dark" ? "light" : "dark"));
-  };
+  const isDark = false;
 
   const handleStart = () => {
     setIsStarting(true);
 
-    // Preparado para conectar con el flujo real de diagnóstico.
-    // Ejemplo futuro:
-    // router.push("/diagnostico");
-
     setTimeout(() => {
       setIsStarting(false);
-      alert("Aquí comenzará el diagnóstico de tu conexión.");
+      router.push("/diagnostico");
     }, 700);
   };
 
@@ -100,9 +63,9 @@ export default function HomePage() {
     <main
       className={`min-h-screen overflow-x-hidden transition-colors duration-500 ${
         isDark
-          ? "bg-[#07111F] text-white"
-          : "bg-[#F7FAFC] text-[#102033]"
-      } ${largeText ? "text-[17px]" : ""}`}
+          ? "bg-win-blue text-white"
+          : "bg-win-surface text-win-text"
+      }`}
     >
       {/* =====================================================
           FONDO DECORATIVO
@@ -120,16 +83,6 @@ export default function HomePage() {
           }`}
         />
 
-        <div
-          className={`absolute inset-0 opacity-[0.035] ${
-            isDark ? "block" : "hidden"
-          }`}
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
-            backgroundSize: "64px 64px",
-          }}
-        />
       </div>
 
       {/* =====================================================
@@ -138,7 +91,7 @@ export default function HomePage() {
       <header
         className={`relative z-50 border-b transition-colors duration-500 ${
           isDark
-            ? "border-white/[0.07] bg-[#07111F]/80"
+            ? "border-white/[0.07] bg-win-blue"
             : "border-slate-200/80 bg-white/80"
         } backdrop-blur-xl`}
       >
@@ -166,7 +119,7 @@ export default function HomePage() {
             <div className="text-left">
               <p
                 className={`text-[15px] font-extrabold tracking-[0.22em] ${
-                  isDark ? "text-white" : "text-[#102033]"
+                  isDark ? "text-white" : "text-win-text"
                 }`}
               >
                 WIN
@@ -176,7 +129,7 @@ export default function HomePage() {
                   isDark ? "text-slate-500" : "text-slate-500"
                 }`}
               >
-                HOME CHECK
+                DETECT
               </p>
             </div>
           </button>
@@ -184,7 +137,7 @@ export default function HomePage() {
           {/* Navegación desktop */}
           <nav className="hidden items-center gap-8 lg:flex">
             <a
-              href="#como-funciona"
+              href="/como-funciona"
               className={`text-sm font-medium transition-colors ${
                 isDark
                   ? "text-slate-400 hover:text-white"
@@ -195,7 +148,7 @@ export default function HomePage() {
             </a>
 
             <a
-              href="#beneficios"
+              href="/beneficios"
               className={`text-sm font-medium transition-colors ${
                 isDark
                   ? "text-slate-400 hover:text-white"
@@ -220,45 +173,6 @@ export default function HomePage() {
 
           {/* Acciones */}
           <div className="flex items-center gap-2">
-            {/* Accesibilidad */}
-            <button
-              onClick={() => setLargeText((current) => !current)}
-              className={`hidden h-10 items-center gap-2 rounded-xl border px-3 text-xs font-semibold transition-all sm:flex ${
-                largeText
-                  ? isDark
-                    ? "border-cyan-300/40 bg-cyan-300/10 text-cyan-200"
-                    : "border-cyan-600/30 bg-cyan-50 text-cyan-800"
-                  : isDark
-                    ? "border-white/10 text-slate-400 hover:border-white/20 hover:text-white"
-                    : "border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-950"
-              }`}
-              aria-label="Cambiar tamaño del texto"
-              title="Cambiar tamaño del texto"
-            >
-              <Eye className="h-4 w-4" />
-              <span>Texto {largeText ? "grande" : "normal"}</span>
-            </button>
-
-            {/* Tema */}
-            <button
-              onClick={toggleTheme}
-              className={`flex h-10 w-10 items-center justify-center rounded-xl border transition-all duration-300 ${
-                isDark
-                  ? "border-white/10 bg-white/[0.04] text-slate-300 hover:border-cyan-300/30 hover:text-cyan-200"
-                  : "border-slate-200 bg-white text-slate-600 hover:border-cyan-500/30 hover:text-cyan-700"
-              }`}
-              aria-label={
-                isDark ? "Activar modo claro" : "Activar modo oscuro"
-              }
-              title={isDark ? "Modo claro" : "Modo oscuro"}
-            >
-              {isDark ? (
-                <Sun className="h-[18px] w-[18px]" />
-              ) : (
-                <Moon className="h-[18px] w-[18px]" />
-              )}
-            </button>
-
             {/* Menú móvil */}
             <button
               onClick={() => setMenuOpen((current) => !current)}
@@ -287,13 +201,13 @@ export default function HomePage() {
           <nav
             className={`border-t px-5 py-5 sm:px-8 ${
               isDark
-                ? "border-white/[0.07] bg-[#081525]"
+                ? "border-white/[0.07] bg-win-blue"
                 : "border-slate-200 bg-white"
             }`}
           >
             <div className="flex flex-col gap-1">
               <a
-                href="#como-funciona"
+                href="/como-funciona"
                 onClick={() => setMenuOpen(false)}
                 className={`rounded-xl px-4 py-3.5 text-base font-medium ${
                   isDark
@@ -305,7 +219,7 @@ export default function HomePage() {
               </a>
 
               <a
-                href="#beneficios"
+                href="/beneficios"
                 onClick={() => setMenuOpen(false)}
                 className={`rounded-xl px-4 py-3.5 text-base font-medium ${
                   isDark
@@ -331,17 +245,6 @@ export default function HomePage() {
                 Ayuda
               </button>
 
-              <button
-                onClick={() => setLargeText((current) => !current)}
-                className={`flex items-center gap-3 rounded-xl px-4 py-3.5 text-left text-base font-medium ${
-                  isDark
-                    ? "text-slate-300 hover:bg-white/[0.05]"
-                    : "text-slate-700 hover:bg-slate-50"
-                }`}
-              >
-                <Eye className="h-5 w-5" />
-                Texto {largeText ? "grande activado" : "normal"}
-              </button>
             </div>
           </nav>
         </div>
@@ -380,11 +283,11 @@ export default function HomePage() {
             {/* Título */}
             <h1
               className={`text-[2.65rem] font-extrabold leading-[1.08] tracking-[-0.045em] sm:text-5xl lg:text-[4.25rem] ${
-                isDark ? "text-white" : "text-[#102033]"
+                isDark ? "text-white" : "text-win-text"
               }`}
             >
               Descubre cómo funciona tu{" "}
-              <span className="bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 bg-clip-text text-transparent">
+              <span className="text-win-orange">
                 WiFi
               </span>{" "}
               en tu hogar.
@@ -422,7 +325,7 @@ export default function HomePage() {
                       className={`flex items-center gap-2 rounded-xl border px-4 py-3 text-sm font-semibold transition-all duration-300 ${
                         isSelected
                           ? isDark
-                            ? "border-cyan-300/40 bg-cyan-300/10 text-cyan-200 shadow-[0_0_20px_rgba(34,211,238,0.08)]"
+                            ? "border-cyan-300/40 bg-cyan-300/10 text-cyan-200 shadow-lg shadow-cyan-500/20"
                             : "border-cyan-600/40 bg-cyan-50 text-cyan-800"
                           : isDark
                             ? "border-white/10 bg-white/[0.03] text-slate-400 hover:border-white/20 hover:text-white"
@@ -451,7 +354,7 @@ export default function HomePage() {
               <button
                 onClick={handleStart}
                 disabled={isStarting}
-                className="group flex min-h-[58px] w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-7 text-base font-extrabold text-white shadow-[0_12px_35px_rgba(14,165,233,0.22)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_45px_rgba(14,165,233,0.32)] active:scale-[0.98] disabled:cursor-wait disabled:opacity-80 sm:w-auto"
+                className="group flex min-h-[58px] w-full items-center justify-center gap-3 rounded-2xl bg-win-orange px-7 text-base font-extrabold text-white shadow-lg shadow-cyan-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-cyan-500/30 active:scale-[0.98] disabled:cursor-wait disabled:opacity-80 sm:w-auto"
               >
                 {isStarting ? (
                   <>
@@ -580,17 +483,13 @@ export default function HomePage() {
             {/* Líneas */}
             <div
               className={`absolute h-px w-[340px] rotate-45 ${
-                isDark
-                  ? "bg-gradient-to-r from-transparent via-cyan-300/20 to-transparent"
-                  : "bg-gradient-to-r from-transparent via-cyan-600/20 to-transparent"
+                "bg-win-orange"
               }`}
             />
 
             <div
               className={`absolute h-px w-[340px] -rotate-45 ${
-                isDark
-                  ? "bg-gradient-to-r from-transparent via-cyan-300/20 to-transparent"
-                  : "bg-gradient-to-r from-transparent via-cyan-600/20 to-transparent"
+                "bg-win-orange"
               }`}
             />
 
@@ -598,17 +497,10 @@ export default function HomePage() {
             <div
               className={`relative z-10 flex h-[230px] w-[230px] flex-col items-center justify-center rounded-[2.2rem] border shadow-2xl backdrop-blur-xl transition-all duration-500 ${
                 isDark
-                  ? "border-white/[0.13] bg-[#0D1B30]/95 shadow-cyan-950/40"
+                  ? "border-white/[0.13] bg-win-blue shadow-cyan-950/40"
                   : "border-slate-200 bg-white/95 shadow-slate-300/40"
               }`}
             >
-              <div
-                className={`absolute inset-0 rounded-[2.2rem] bg-gradient-to-b ${
-                  isDark
-                    ? "from-cyan-400/[0.09] to-transparent"
-                    : "from-cyan-400/[0.08] to-transparent"
-                }`}
-              />
 
               <div
                 className={`relative mb-5 flex h-[72px] w-[72px] items-center justify-center rounded-2xl border ${
@@ -623,7 +515,7 @@ export default function HomePage() {
                   }`}
                 />
 
-                <span className="absolute -right-1 -top-1 h-3.5 w-3.5 animate-pulse rounded-full border-2 border-[#0D1B30] bg-emerald-400" />
+                <span className="absolute -right-1 -top-1 h-3.5 w-3.5 animate-pulse rounded-full border-2 border-win-blue bg-emerald-400" />
               </div>
 
               <p
@@ -636,7 +528,7 @@ export default function HomePage() {
 
               <p
                 className={`relative mt-2 text-xl font-bold ${
-                  isDark ? "text-white" : "text-[#102033]"
+                  isDark ? "text-white" : "text-win-text"
                 }`}
               >
                 Lista para medir
@@ -655,7 +547,7 @@ export default function HomePage() {
             <div
               className={`absolute left-0 top-[14%] z-20 flex items-center gap-3 rounded-2xl border px-4 py-3 shadow-xl backdrop-blur-md transition-all duration-500 hover:-translate-y-1 ${
                 isDark
-                  ? "border-emerald-400/20 bg-[#0C1C2C]/90 shadow-emerald-950/20"
+                  ? "border-emerald-400/20 bg-win-blue shadow-emerald-950/20"
                   : "border-emerald-200 bg-white/95 shadow-emerald-100"
               }`}
             >
@@ -685,7 +577,7 @@ export default function HomePage() {
             <div
               className={`absolute right-0 top-[8%] z-20 flex items-center gap-3 rounded-2xl border px-4 py-3 shadow-xl backdrop-blur-md transition-all duration-500 hover:-translate-y-1 ${
                 isDark
-                  ? "border-blue-400/20 bg-[#0C1C2C]/90 shadow-blue-950/20"
+                  ? "border-blue-400/20 bg-win-blue shadow-blue-950/20"
                   : "border-blue-200 bg-white/95 shadow-blue-100"
               }`}
             >
@@ -715,7 +607,7 @@ export default function HomePage() {
             <div
               className={`absolute bottom-[14%] left-[2%] z-20 flex items-center gap-3 rounded-2xl border px-4 py-3 shadow-xl backdrop-blur-md transition-all duration-500 hover:-translate-y-1 ${
                 isDark
-                  ? "border-amber-400/20 bg-[#0C1C2C]/90 shadow-amber-950/20"
+                  ? "border-amber-400/20 bg-win-blue shadow-amber-950/20"
                   : "border-amber-200 bg-white/95 shadow-amber-100"
               }`}
             >
@@ -745,7 +637,7 @@ export default function HomePage() {
             <div
               className={`absolute bottom-[8%] right-[0%] hidden rounded-2xl border p-4 shadow-xl backdrop-blur-md sm:block ${
                 isDark
-                  ? "border-white/[0.10] bg-[#0C1C2C]/90"
+                  ? "border-white/[0.10] bg-win-blue"
                   : "border-slate-200 bg-white/95"
               }`}
             >
@@ -762,7 +654,7 @@ export default function HomePage() {
 
               <p
                 className={`mt-2 text-2xl font-extrabold ${
-                  isDark ? "text-white" : "text-[#102033]"
+                  isDark ? "text-white" : "text-win-text"
                 }`}
               >
                 360°
@@ -803,7 +695,7 @@ export default function HomePage() {
 
             <h2
               className={`mt-4 text-3xl font-extrabold tracking-[-0.035em] sm:text-4xl ${
-                isDark ? "text-white" : "text-[#102033]"
+                isDark ? "text-white" : "text-win-text"
               }`}
             >
               Entender tu conexión no debería ser complicado.
@@ -850,7 +742,7 @@ export default function HomePage() {
                   key={step.number}
                   className={`group relative rounded-3xl border p-7 transition-all duration-300 hover:-translate-y-1 ${
                     isDark
-                      ? "border-white/[0.08] bg-[#0B1729] hover:border-cyan-300/20"
+                      ? "border-white/[0.08] bg-win-blue hover:border-cyan-300/20"
                       : "border-slate-200 bg-white shadow-sm hover:border-cyan-300/50 hover:shadow-lg"
                   }`}
                 >
@@ -878,7 +770,7 @@ export default function HomePage() {
 
                   <h3
                     className={`mt-7 text-xl font-bold ${
-                      isDark ? "text-white" : "text-[#102033]"
+                      isDark ? "text-white" : "text-win-text"
                     }`}
                   >
                     {step.title}
@@ -913,7 +805,7 @@ export default function HomePage() {
       <section
         id="beneficios"
         className={`relative z-10 ${
-          isDark ? "bg-[#07111F]" : "bg-[#F7FAFC]"
+          isDark ? "bg-win-blue" : "bg-win-white"
         }`}
       >
         <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10 lg:py-24">
@@ -929,7 +821,7 @@ export default function HomePage() {
 
               <h2
                 className={`mt-4 text-3xl font-extrabold leading-tight tracking-[-0.035em] sm:text-4xl ${
-                  isDark ? "text-white" : "text-[#102033]"
+                  isDark ? "text-white" : "text-win-text"
                 }`}
               >
                 No se trata solo de ver números.
@@ -947,7 +839,7 @@ export default function HomePage() {
                   isDark ? "text-slate-400" : "text-slate-600"
                 }`}
               >
-                WIN HOME CHECK transforma los datos de conectividad en
+                WINDetect transforma los datos de conectividad en
                 información que cualquier persona puede comprender.
               </p>
 
@@ -994,7 +886,7 @@ export default function HomePage() {
                     key={benefit.title}
                     className={`rounded-2xl border p-6 ${
                       isDark
-                        ? "border-white/[0.08] bg-[#0B1729]"
+                        ? "border-white/[0.08] bg-win-blue"
                         : "border-slate-200 bg-white shadow-sm"
                     }`}
                   >
@@ -1012,7 +904,7 @@ export default function HomePage() {
 
                     <h3
                       className={`text-lg font-bold ${
-                        isDark ? "text-white" : "text-[#102033]"
+                        isDark ? "text-white" : "text-win-text"
                       }`}
                     >
                       {benefit.title}
@@ -1040,8 +932,8 @@ export default function HomePage() {
         <div
           className={`relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] border px-6 py-14 text-center sm:px-12 lg:py-20 ${
             isDark
-              ? "border-cyan-300/15 bg-gradient-to-br from-[#0B2035] via-[#0B1729] to-[#101B35]"
-              : "border-cyan-200 bg-gradient-to-br from-cyan-50 via-white to-blue-50"
+              ? "border-cyan-300/15 bg-win-blue"
+              : "border-cyan-200 bg-win-white"
           }`}
         >
           <div
@@ -1065,7 +957,7 @@ export default function HomePage() {
 
             <h2
               className={`mx-auto mt-7 max-w-2xl text-3xl font-extrabold tracking-[-0.035em] sm:text-4xl ${
-                isDark ? "text-white" : "text-[#102033]"
+                isDark ? "text-white" : "text-win-text"
               }`}
             >
               Empieza a conocer la experiencia de tu WiFi.
@@ -1082,7 +974,7 @@ export default function HomePage() {
 
             <button
               onClick={handleStart}
-              className="group mt-8 inline-flex min-h-[56px] items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 px-7 text-base font-extrabold text-white shadow-lg shadow-cyan-500/20 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-cyan-500/30"
+              className="group mt-8 inline-flex min-h-[56px] items-center justify-center gap-3 rounded-2xl bg-win-orange px-7 text-base font-extrabold text-white shadow-lg shadow-cyan-500/20 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-cyan-500/30"
             >
               Iniciar diagnóstico
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -1097,7 +989,7 @@ export default function HomePage() {
       <footer
         className={`relative z-10 border-t ${
           isDark
-            ? "border-white/[0.07] bg-[#050C16]"
+            ? "border-white/[0.07] bg-win-blue"
             : "border-slate-200 bg-white"
         }`}
       >
@@ -1118,10 +1010,10 @@ export default function HomePage() {
             <div>
               <p
                 className={`text-xs font-bold tracking-[0.18em] ${
-                  isDark ? "text-white" : "text-[#102033]"
+                  isDark ? "text-white" : "text-win-text"
                 }`}
               >
-                WIN HOME CHECK
+                WINDetect
               </p>
               <p
                 className={`mt-1 text-xs ${
@@ -1148,7 +1040,7 @@ export default function HomePage() {
       ====================================================== */}
       {showHelp && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/60 px-5 backdrop-blur-sm"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-win-blue/60 px-5 backdrop-blur-sm"
           onClick={() => setShowHelp(false)}
         >
           <div
@@ -1157,7 +1049,7 @@ export default function HomePage() {
             aria-labelledby="help-title"
             className={`w-full max-w-md rounded-3xl border p-7 shadow-2xl ${
               isDark
-                ? "border-white/10 bg-[#0D1B30]"
+                ? "border-white/10 bg-win-blue"
                 : "border-slate-200 bg-white"
             }`}
             onClick={(event) => event.stopPropagation()}
@@ -1179,7 +1071,7 @@ export default function HomePage() {
                 <h2
                   id="help-title"
                   className={`text-2xl font-bold ${
-                    isDark ? "text-white" : "text-[#102033]"
+                    isDark ? "text-white" : "text-win-text"
                   }`}
                 >
                   ¿Cómo funciona?
@@ -1204,7 +1096,7 @@ export default function HomePage() {
                 isDark ? "text-slate-400" : "text-slate-600"
               }`}
             >
-              WIN HOME CHECK te permite evaluar la experiencia de conectividad
+              WINDetect te permite evaluar la experiencia de conectividad
               desde tu navegador mientras recorres los espacios de tu hogar.
             </p>
 
@@ -1232,7 +1124,7 @@ export default function HomePage() {
 
             <button
               onClick={() => setShowHelp(false)}
-              className="mt-6 flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 py-3.5 text-sm font-bold text-white"
+              className="mt-6 flex w-full items-center justify-center rounded-xl bg-win-orange py-3.5 text-sm font-bold text-white"
             >
               Entendido
             </button>

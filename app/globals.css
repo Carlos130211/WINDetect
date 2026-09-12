@@ -1,26 +1,46 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --win-orange: #FF5A0A;
+  --win-blue: #0A53BE;
+  --win-white: #FFFFFF;
+  --win-surface: #F5F7FA;
+  --win-text: #1F2937;
+  --win-excellent: #22C55E;
+  --win-regular: #FACC15;
+  --win-poor: #EF4444;
+  --background: var(--win-white);
+  --foreground: var(--win-text);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-win-orange: var(--win-orange);
+  --color-win-blue: var(--win-blue);
+  --color-win-white: var(--win-white);
+  --color-win-surface: var(--win-surface);
+  --color-win-text: var(--win-text);
+  --color-win-excellent: var(--win-excellent);
+  --color-win-regular: var(--win-regular);
+  --color-win-poor: var(--win-poor);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Alias existentes, asignados a la nueva guía visual. */
+  --color-cyan-50: var(--win-surface); --color-cyan-100: var(--win-surface); --color-cyan-200: var(--win-blue); --color-cyan-300: var(--win-blue); --color-cyan-400: var(--win-blue); --color-cyan-500: var(--win-blue); --color-cyan-600: var(--win-blue); --color-cyan-700: var(--win-blue); --color-cyan-800: var(--win-blue); --color-cyan-900: var(--win-blue); --color-cyan-950: var(--win-blue);
+  --color-sky-500: var(--win-blue);
+  --color-blue-50: var(--win-blue); --color-blue-100: var(--win-blue); --color-blue-200: var(--win-blue); --color-blue-400: var(--win-blue); --color-blue-500: var(--win-blue); --color-blue-600: var(--win-blue); --color-blue-700: var(--win-blue); --color-blue-950: var(--win-blue);
+  --color-emerald-100: var(--win-excellent); --color-emerald-200: var(--win-excellent); --color-emerald-300: var(--win-excellent); --color-emerald-400: var(--win-excellent); --color-emerald-500: var(--win-excellent); --color-emerald-700: var(--win-excellent); --color-emerald-950: var(--win-excellent);
+  --color-amber-200: var(--win-regular); --color-amber-300: var(--win-regular); --color-amber-400: var(--win-regular); --color-amber-500: var(--win-regular); --color-amber-700: var(--win-regular); --color-amber-950: var(--win-regular);
+  --color-red-200: var(--win-poor); --color-red-300: var(--win-poor); --color-red-400: var(--win-poor); --color-red-500: var(--win-poor); --color-red-700: var(--win-poor);
+  --color-slate-50: var(--win-surface); --color-slate-100: var(--win-surface); --color-slate-200: var(--win-surface); --color-slate-300: var(--win-text); --color-slate-400: var(--win-text); --color-slate-500: var(--win-text); --color-slate-600: var(--win-text); --color-slate-700: var(--win-text); --color-slate-800: var(--win-text); --color-slate-900: var(--win-text); --color-slate-950: var(--win-text);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
+body,
+html {
+  background: var(--win-white);
+  color: var(--win-text);
+  color-scheme: light;
   font-family: Arial, Helvetica, sans-serif;
 }
